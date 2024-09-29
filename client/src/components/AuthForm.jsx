@@ -2,9 +2,11 @@ import { Form, Input, message } from "antd";
 import { registerUser, loginUser } from "../apicalls/auth";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AuthForm = ({ isLoginPage }) => {
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleOnFinish = async (values) => {
     setSubmitting(true);
@@ -15,6 +17,7 @@ const AuthForm = ({ isLoginPage }) => {
         if (response.isSuccess) {
           localStorage.setItem("token", response.token);
           message.success(response.message);
+          navigate("/");
         } else {
           throw new Error(response.message || "Login failed");
         }
@@ -26,6 +29,7 @@ const AuthForm = ({ isLoginPage }) => {
         const response = await registerUser(values);
         if (response.isSuccess) {
           message.success(response.message);
+          navigate("/login");
         } else {
           throw new Error(response.message || "Registration failed");
         }
@@ -37,7 +41,7 @@ const AuthForm = ({ isLoginPage }) => {
   };
 
   return (
-    <section className="h-screen w-full flex items-center justify-center">
+    <section className="my-10 w-full flex items-center justify-center">
       <div className=" w-[450px]">
         <h1 className="text-3xl font-bold mb-4 text-blue-600">
           POINT.IO - {isLoginPage ? "LOGIN" : "REGISTER"}
