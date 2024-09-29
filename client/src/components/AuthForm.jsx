@@ -1,11 +1,13 @@
 import { Form, Input, message } from "antd";
-import { registerUser, loginUser } from "../apicalls/auth";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser, registerUser } from "../apicalls/auth";
+import { setUserId } from "../store/slices/userSlice";
 
 const AuthForm = ({ isLoginPage }) => {
   const [submitting, setSubmitting] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleOnFinish = async (values) => {
@@ -16,6 +18,7 @@ const AuthForm = ({ isLoginPage }) => {
         const response = await loginUser(values);
         if (response.isSuccess) {
           localStorage.setItem("token", response.token);
+          dispatch(setUserId(response.token));
           message.success(response.message);
           navigate("/");
         } else {

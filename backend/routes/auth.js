@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
+import authMiddleware from "../middelwares/auth.js";
 
 import * as authController from "../controllers/auth.js";
 
@@ -41,6 +42,14 @@ router.post(
       .withMessage("Password must have at least 6 characters."),
   ],
   authController.login,
+);
+
+// Check if user is logged in or not
+// get ->  /get-current-user
+router.get(
+  "/get-current-user",
+  authMiddleware,
+  authController.checkCurrentUser,
 );
 
 export default router;
