@@ -6,6 +6,7 @@ import Register from "./pages/Auth/Register";
 import Index from "./pages/Homepage/Index";
 import Profile from "./pages/profile/Index";
 import AuthProvider from "./providers/AuthProvider";
+import Details from "./pages/Homepage/Details";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -44,6 +45,10 @@ const App = () => {
               <Admin />
             </AuthProvider>
           ),
+        },
+        {
+          path: "/products/:id",
+          element: <Details />,
         },
       ],
     },
