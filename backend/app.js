@@ -8,6 +8,7 @@ import multer from "multer";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/product.js";
 import adminRoutes from "./routes/admin.js";
+import publicRoutes from "./routes/public.js";
 
 const storageConfigure = multer.diskStorage({
   filename: (_req, file, cb) => {
@@ -43,6 +44,7 @@ app.use(
 app.use(authRoutes);
 app.use(productRoutes);
 app.use("/admin", adminRoutes);
+app.use("/api", publicRoutes);
 
 const startServer = async () => {
   try {

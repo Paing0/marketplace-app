@@ -6,9 +6,9 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.reducer.user);
 
   return (
-    <nav className="flex items-center justify-between bg-blue-500 text-white p-4">
+    <nav className="flex items-center justify-between bg-blue-600 text-white p-4 mb-4">
       <Link className="font-bold text-2xl" to={"/"}>
-        POINT.IO
+        TradeHub
       </Link>
       <div className="flex items-center gap-3 text-base font-medium ">
         {user ? (

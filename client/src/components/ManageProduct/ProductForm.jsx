@@ -6,8 +6,12 @@ import { Checkbox, Col, Form, Input, Row, Select, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOldProduct, sellProduct, updateProduct } from "../apicalls/product";
-import { setLoader } from "../store/slices/loaderSlice";
+import {
+  getOldProduct,
+  sellProduct,
+  updateProduct,
+} from "../../apicalls/product";
+import { setLoader } from "../../store/slices/loaderSlice";
 
 const ProductForm = ({
   setActiveTabKey,

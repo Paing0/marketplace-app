@@ -6,7 +6,6 @@ export const getAllProducts = async (_req, res) => {
     const products = await Product.find()
       .populate("seller", "name")
       .sort({ createdAt: -1 });
-    console.log(products);
     return res.status(200).json({
       isSuccess: true,
       products,

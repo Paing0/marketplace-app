@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Main from "./layouts/Main";
 import Admin from "./pages/admin/Index";
-import Index from "./pages/Index";
-import Login from "./pages/Login";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Index from "./pages/Homepage/Index";
 import Profile from "./pages/profile/Index";
-import Register from "./pages/Register";
 import AuthProvider from "./providers/AuthProvider";
 
 const App = () => {
