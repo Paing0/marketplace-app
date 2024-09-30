@@ -84,6 +84,11 @@ export const login = async (req, res) => {
       expiresIn: "1d",
     });
 
+    // account status check
+    if (user.status === "banned") {
+      throw new Error("This account was banned");
+    }
+
     return res.status(200).json({
       isSuccess: true,
       message: "Logged in successfully",

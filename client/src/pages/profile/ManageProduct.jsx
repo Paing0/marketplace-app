@@ -1,5 +1,4 @@
 import { Tabs } from "antd";
-import { useState } from "react";
 import ProductForm from "../../components/ProductForm";
 import Upload from "../../components/Upload";
 

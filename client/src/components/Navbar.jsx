@@ -1,9 +1,9 @@
-import { UsersIcon } from "@heroicons/react/24/solid";
+import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const { userId } = useSelector((state) => state.reducer.user);
+  const { user } = useSelector((state) => state.reducer.user);
 
   return (
     <nav className="flex items-center justify-between bg-blue-500 text-white p-4">
@@ -11,14 +11,21 @@ const Navbar = () => {
         POINT.IO
       </Link>
       <div className="flex items-center gap-3 text-base font-medium ">
-        {userId ? (
-          <Link
-            className="bg-white text-blue-500 px-2 py-1 flex items-center gap-1 rounded-lg"
-            to={"/profile"}
-          >
-            <UsersIcon width={20} />
-            Profile
-          </Link>
+        {user ? (
+          <>
+            {user.role === "user" && (
+              <Link to={"/profile"} className="px-2 py-1 flex items-end gap-1">
+                <UserIcon width={26} />
+                Profile
+              </Link>
+            )}
+            {user.role === "admin" && (
+              <Link to={"/admin"} className="px-2 py-1 flex items-end gap-1">
+                <UserIcon width={26} />
+                Admin Pannel
+              </Link>
+            )}
+          </>
         ) : (
           <>
             <Link

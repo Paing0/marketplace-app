@@ -1,8 +1,13 @@
-import { SquaresPlusIcon } from "@heroicons/react/24/solid";
+import {
+  EllipsisHorizontalIcon,
+  SquaresPlusIcon,
+} from "@heroicons/react/24/solid";
 import { Checkbox, Col, Form, Input, Row, Select, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getOldProduct, sellProduct, updateProduct } from "../apicalls/product";
+import { setLoader } from "../store/slices/loaderSlice";
 
 const ProductForm = ({
   setActiveTabKey,
@@ -12,6 +17,8 @@ const ProductForm = ({
 }) => {
   const [form] = Form.useForm();
   const [sellerId, setSellerId] = useState(null);
+  const { isProcessing } = useSelector((state) => state.reducer.loader);
+  const dispatch = useDispatch();
 
   const getOldProductData = async () => {
     try {
@@ -47,6 +54,7 @@ const ProductForm = ({
   }, [editMode]);
 
   const onFinishHandler = async (values) => {
+    dispatch(setLoader(true));
     if (!values.product_detail || values.product_details.length === 0) {
       values.product_details = [];
     }
@@ -71,6 +79,7 @@ const ProductForm = ({
     } catch (err) {
       message.error(err.message);
     }
+    dispatch(setLoader(false));
   };
 
   const options = [
@@ -120,7 +129,7 @@ const ProductForm = ({
   ];
 
   return (
-    <section className="my-5">
+    <section className="mt-3 mb-5">
       <h1 className="text-3xl font-bold my-2">
         {editMode ? "Update your product here" : "What do you want to sell ?"}
       </h1>
@@ -199,9 +208,20 @@ const ProductForm = ({
         <button
           type="submit"
           className="font-medium text-lg text-center py-1 rounded-md bg-blue-500 text-white flex items-center gap-2 justify-center w-full"
+          disabled={isProcessing}
         >
-          <SquaresPlusIcon width={20} />
-          {editMode ? "Update Product" : "Sell Product"}
+          {editMode && !isProcessing && (
+            <>
+              <SquaresPlusIcon width={30} /> Update Product
+            </>
+          )}
+          {!editMode && !isProcessing && (
+            <>
+              <SquaresPlusIcon width={30} />
+              Sell Product
+            </>
+          )}
+          {isProcessing && <EllipsisHorizontalIcon width={30} />}
         </button>
       </Form>
     </section>
