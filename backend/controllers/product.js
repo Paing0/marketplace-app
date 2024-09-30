@@ -1,6 +1,15 @@
 import { validationResult } from "express-validator";
 import Product from "../models/Product.js";
 
+import { v2 as cloudinary } from "cloudinary";
+import "dotenv/config";
+
+cloudinary.config({
+  cloud_name: "dy3ovuxx9",
+  api_key: "816312852193528",
+  api_secret: process.env.CLOUD_API,
+});
+
 export const addNewProduct = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -157,6 +166,25 @@ export const deleteProduct = async (req, res) => {
       });
     }
 
+    if (product.images && Array.isArray(product.images)) {
+      const deletePromise = product.images.map((img) => {
+        const publicId = img.substring(
+          img.lastIndexOf("/") + 1,
+          img.lastIndexOf("."),
+        );
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.destroy(publicId, (err, result) => {
+            if (err) {
+              reject(new Error("Destroy Failed."));
+            } else {
+              resolve(result);
+            }
+          });
+        });
+      });
+      await Promise.all(deletePromise);
+    }
+
     await Product.findByIdAndDelete(id);
     return res.status(200).json({
       isSuccess: true,
@@ -170,7 +198,36 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-export const uploadProductImage = (req, res) => {
-  console.log(req.files);
-  res.json(req.files);
+export const uploadProductImage = async (req, res) => {
+  const productImages = req.files;
+  const productId = req.body.product_id;
+  let secureUrlArray = [];
+
+  try {
+    productImages.forEach((img) => {
+      cloudinary.uploader.upload(img.path, async (err, result) => {
+        if (!err) {
+          const url = result.secure_url;
+          secureUrlArray.push(url);
+          if (productImages.length === secureUrlArray.length) {
+            await Product.findByIdAndUpdate(productId, {
+              $push: { images: secureUrlArray },
+            });
+            return res.status(200).json({
+              isSuccess: true,
+              message: "Product images saved",
+              secureUrlArray,
+            });
+          }
+        } else {
+          throw new Error("Cloud upload failed");
+        }
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: err.message,
+    });
+  }
 };

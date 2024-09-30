@@ -113,7 +113,9 @@ const Products = ({
                 ))}
               </>
             ) : (
-              <p>No products added yet.</p>
+              <tr>
+                <td>No products added yet.</td>
+              </tr>
             )}
           </tbody>
         </table>
