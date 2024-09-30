@@ -2,13 +2,9 @@ import { SquaresPlusIcon } from "@heroicons/react/24/solid";
 import { Checkbox, Col, Form, Input, Row, Select, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
-import {
-  getOldProduct,
-  sellProduct,
-  updateProduct,
-} from "../../apicalls/product";
+import { getOldProduct, sellProduct, updateProduct } from "../apicalls/product";
 
-const AddProduct = ({
+const ProductForm = ({
   setActiveTabKey,
   getProducts,
   editMode,
@@ -51,6 +47,9 @@ const AddProduct = ({
   }, [editMode]);
 
   const onFinishHandler = async (values) => {
+    if (!values.product_detail || values.product_details.length === 0) {
+      values.product_details = [];
+    }
     try {
       let response;
       if (editMode) {
@@ -73,6 +72,7 @@ const AddProduct = ({
       message.error(err.message);
     }
   };
+
   const options = [
     {
       value: "clothing_and_fashion",
@@ -207,4 +207,4 @@ const AddProduct = ({
     </section>
   );
 };
-export default AddProduct;
+export default ProductForm;

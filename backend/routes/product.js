@@ -78,8 +78,13 @@ router.post(
   ],
   productController.updateProduct,
 );
+
 // delete product
 // DELETE /products/:id
 router.delete("/products/:id", authMiddleware, productController.deleteProduct);
+
+// upload product
+// POST /upload
+router.post("/upload", authMiddleware, productController.uploadProductImage);
 
 export default router;
