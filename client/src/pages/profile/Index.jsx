@@ -1,27 +1,63 @@
-import { Tabs } from "antd";
-import Products from "./Products";
+import { Tabs, message } from "antd";
+import { useEffect, useState } from "react";
+import { getAllProducts } from "../../apicalls/product";
 import AddProduct from "./AddProduct";
 import General from "./General";
-import { useState } from "react";
+import Products from "./Products";
 
 const Index = () => {
   const [activeTabKey, setActiveTabKey] = useState("1");
+  const [products, setProducts] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editProductId, setEditProductId] = useState(null);
+
+  const getProducts = async () => {
+    try {
+      const response = await getAllProducts();
+      if (response.isSuccess) {
+        setProducts(response.products);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, [activeTabKey]);
 
   const items = [
     {
       key: "1",
       label: "Products",
-      children: <Products />,
+      children: (
+        <Products
+          products={products}
+          setActiveTabKey={setActiveTabKey}
+          setEditMode={setEditMode}
+          setEditProductId={setEditProductId}
+          getProducts={getProducts}
+        />
+      ),
     },
     {
       key: "2",
-      label: "Sell Product",
-      children: <AddProduct setActiveTabKey={setActiveTabKey} />,
+      label: "Manage Product",
+      children: (
+        <AddProduct
+          setActiveTabKey={setActiveTabKey}
+          getProducts={getProducts}
+          editMode={editMode}
+          editProductId={editProductId}
+        />
+      ),
     },
     {
       key: "3",
       label: "Notification",
-      children: "Content of Tab Pane 3",
+      children: "Content of Tab Pane 2",
     },
     {
       key: "4",
@@ -29,12 +65,17 @@ const Index = () => {
       children: <General />,
     },
   ];
+
+  const onChangeHandler = (key) => {
+    setActiveTabKey(key);
+    setEditMode(false);
+  };
+
   return (
     <section>
       <Tabs
         activeKey={activeTabKey}
-        onChange={(key) => setActiveTabKey(key)}
-        defaultActiveKey="1"
+        onChange={(key) => onChangeHandler(key)}
         items={items}
         tabPosition="left"
         size="large"
@@ -42,4 +83,5 @@ const Index = () => {
     </section>
   );
 };
+
 export default Index;

@@ -30,12 +30,56 @@ router.post(
     body("product_used_for")
       .trim()
       .notEmpty()
-      .withMessage("Product usage information is required"),
+      .withMessage("Product usage time is required"),
     body("product_details")
       .isArray()
       .withMessage("Product details must be an array"),
   ],
   productController.addNewProduct,
 );
+
+// get all products
+// GET /products
+router.get("/products", authMiddleware, productController.getAllProducts);
+
+// get single product
+// GET /products/:id
+router.get("/products/:id", authMiddleware, productController.getOldProduct);
+
+// update product
+// POST /update-product
+router.post(
+  "/update-product",
+  authMiddleware,
+  [
+    body("product_name")
+      .trim()
+      .notEmpty()
+      .withMessage("product name is required."),
+    body("product_description")
+      .trim()
+      .notEmpty()
+      .withMessage("product description is required"),
+    body("product_price")
+      .trim()
+      .notEmpty()
+      .withMessage("product price is required"),
+    body("product_category")
+      .trim()
+      .notEmpty()
+      .withMessage("product category is required"),
+    body("product_used_for")
+      .trim()
+      .notEmpty()
+      .withMessage("product usge time is required"),
+    body("product_details")
+      .isArray()
+      .withMessage("product details must be an array."),
+  ],
+  productController.updateProduct,
+);
+// delete product
+// DELETE /products/:id
+router.delete("/products/:id", authMiddleware, productController.deleteProduct);
 
 export default router;
