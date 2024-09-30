@@ -280,6 +280,15 @@ export const deleteProductImages = async (req, res) => {
 export const savedProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const alreadySavedProduct = await SavedProduct.findOne({
+      $and: [{ user_id: req.userId }, { product_id: id }],
+    });
+
+    if (alreadySavedProduct) {
+      throw new Error("Product is already saved.");
+    }
+
     await SavedProduct.create({
       user_id: req.userId,
       product_id: id,
@@ -289,7 +298,7 @@ export const savedProduct = async (req, res) => {
       message: "Product Saved.",
     });
   } catch (error) {
-    return res.status(401).json({
+    return res.status(404).json({
       isSuccess: false,
       message: error.message,
     });
@@ -300,7 +309,7 @@ export const getSavedProducts = async (req, res) => {
   try {
     const products = await SavedProduct.find({
       user_id: req.userId,
-    }).populate("product_id", "name category images description");
+    }).populate("product_id", "name category images description price");
     if (!products || products.length === 0) {
       throw new Error("No products are not saved yet.");
     }

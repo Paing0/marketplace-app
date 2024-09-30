@@ -1,9 +1,25 @@
-import { UserIcon, BookmarkIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+import {
+  BookmarkIcon,
+  UserIcon,
+  ArrowLeftStartOnRectangleIcon,
+} from "@heroicons/react/24/solid";
+import { setUser } from "../store/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user } = useSelector((state) => state.reducer.user);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    dispatch(setUser(null));
+    navigate("/");
+  };
 
   return (
     <nav className="flex items-center justify-between bg-blue-600 text-white p-4 mb-4">
@@ -31,6 +47,11 @@ const Navbar = () => {
             >
               <BookmarkIcon width={26} />
             </Link>
+            <ArrowLeftStartOnRectangleIcon
+              width={26}
+              onClick={logout}
+              className="text-red-600 cursor-pointer"
+            />
           </div>
         ) : (
           <>

@@ -130,12 +130,15 @@ export const getProductById = async (id) => {
 // save product
 export const savedProduct = async (id) => {
   try {
-    const response = await axiosInstance.post(`/saved-products/${id}`);
+    const response = await axiosInstance.post(`/saved-products/${id}`, {
+      validateStatus: () => true,
+    });
     return response.data;
   } catch (error) {
     return error.message;
   }
 };
+
 // get saved products
 export const getSavedProducts = async () => {
   try {
@@ -145,6 +148,7 @@ export const getSavedProducts = async () => {
     return error.message;
   }
 };
+
 // delete saved product
 export const deleteSavedProduct = async (id) => {
   try {
