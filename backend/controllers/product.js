@@ -175,7 +175,7 @@ export const deleteProduct = async (req, res) => {
         return new Promise((resolve, reject) => {
           cloudinary.uploader.destroy(publicId, (err, result) => {
             if (err) {
-              reject(new Error("Destroy Failed."));
+              reject(new Error("Destroy Failed"));
             } else {
               resolve(result);
             }
@@ -226,6 +226,50 @@ export const uploadProductImage = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
+      isSuccess: false,
+      message: err.message,
+    });
+  }
+};
+
+export const getSavedImages = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id).select("images");
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Product images are fetched",
+      data: product,
+    });
+  } catch (err) {
+    return res.status(404).json({
+      isSuccess: false,
+      message: err.message,
+    });
+  }
+};
+
+export const deleteProductImages = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const decodeImgToDelete = decodeURIComponent(req.params.imgToDelete);
+    await Product.findByIdAndUpdate(productId, {
+      $pull: { images: decodeImgToDelete },
+    });
+    const publicId = decodeImgToDelete.substring(
+      decodeImgToDelete.lastIndexOf("/") + 1,
+      decodeImgToDelete.lastIndexOf("."),
+    );
+    await cloudinary.uploader.destroy(publicId);
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Image deleted",
+    });
+  } catch (err) {
+    return res.status(404).json({
       isSuccess: false,
       message: err.message,
     });
