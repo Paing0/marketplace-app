@@ -2,10 +2,14 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { getProductsByFilters } from "../../apicalls/product";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
+import { setLoader } from "../../store/slices/loaderSlice";
 
 const Hero = ({ setProducts, getAllProducts }) => {
+  const dispatch = useDispatch();
   const [searchKey, setSearchKey] = useState("");
   const searchHandler = async () => {
+    dispatch(setLoader(true));
     try {
       const response = await getProductsByFilters("searchKey", searchKey);
       if (response.isSuccess) {
@@ -16,6 +20,7 @@ const Hero = ({ setProducts, getAllProducts }) => {
     } catch (err) {
       message.error(err.message);
     }
+    dispatch(setLoader(false));
   };
 
   const clearHandler = () => {

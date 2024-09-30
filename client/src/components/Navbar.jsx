@@ -1,4 +1,4 @@
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserIcon, BookmarkIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -12,7 +12,7 @@ const Navbar = () => {
       </Link>
       <div className="flex items-center gap-3 text-base font-medium ">
         {user ? (
-          <>
+          <div className="flex items-center gap-2">
             {user.role === "user" && (
               <Link to={"/profile"} className="px-2 py-1 flex items-end gap-1">
                 <UserIcon width={26} />
@@ -25,7 +25,13 @@ const Navbar = () => {
                 Admin Pannel
               </Link>
             )}
-          </>
+            <Link
+              to={"/saved-products"}
+              className="px-2 py-1 flex items-end gap-1"
+            >
+              <BookmarkIcon width={26} />
+            </Link>
+          </div>
         ) : (
           <>
             <Link

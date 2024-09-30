@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import Product from "../models/Product.js";
+import SavedProduct from "../models/SavedProduct.js";
 
 import { v2 as cloudinary } from "cloudinary";
 import "dotenv/config";
@@ -245,7 +246,7 @@ export const getSavedImages = async (req, res) => {
       data: product,
     });
   } catch (err) {
-    return res.status(404).json({
+    return res.status(500).json({
       isSuccess: false,
       message: err.message,
     });
@@ -269,9 +270,64 @@ export const deleteProductImages = async (req, res) => {
       message: "Image deleted",
     });
   } catch (err) {
-    return res.status(404).json({
+    return res.status(500).json({
       isSuccess: false,
       message: err.message,
+    });
+  }
+};
+
+export const savedProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await SavedProduct.create({
+      user_id: req.userId,
+      product_id: id,
+    });
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Product Saved.",
+    });
+  } catch (error) {
+    return res.status(401).json({
+      isSuccess: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getSavedProducts = async (req, res) => {
+  try {
+    const products = await SavedProduct.find({
+      user_id: req.userId,
+    }).populate("product_id", "name category images description");
+    if (!products || products.length === 0) {
+      throw new Error("No products are not saved yet.");
+    }
+    return res.status(200).json({
+      isSuccess: true,
+      products,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: error.message,
+    });
+  }
+};
+
+export const unSavedProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await SavedProduct.findOneAndRemove({ product_id: id });
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Product removed from the list.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: error.message,
     });
   }
 };
