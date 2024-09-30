@@ -1,12 +1,12 @@
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { message } from "antd";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteSavedImages,
   getSavedImages,
   uploadImage,
 } from "../apicalls/product";
-import { useDispatch, useSelector } from "react-redux";
 import { setLoader } from "../store/slices/loaderSlice";
 
 const Upload = ({ editProductId, setActiveTabKey }) => {

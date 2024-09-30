@@ -1,7 +1,6 @@
-import moment from "moment";
-
-import { deleteProduct } from "../../apicalls/product";
 import { message } from "antd";
+import moment from "moment";
+import { deleteProduct } from "../../apicalls/product";
 
 const Products = ({
   products,
@@ -39,7 +38,7 @@ const Products = ({
   };
 
   return (
-    <section className="mt-5">
+    <section className="my-5">
       <h1 className=" text-3xl font-semibold my-2">Products List</h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 ">

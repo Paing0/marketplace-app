@@ -1,23 +1,9 @@
-import { useEffect, useState } from "react";
-import { banUser, getAllUsers, unBanUser } from "../../apicalls/admin";
 import { message } from "antd";
 import moment from "moment";
+import { useEffect } from "react";
+import { banUser, unBanUser } from "../../apicalls/admin";
 
-const Users = () => {
-  const [users, setUsers] = useState([]);
-  const getUsers = async () => {
-    try {
-      const response = await getAllUsers();
-      if (response.isSuccess) {
-        setUsers(response.users);
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (err) {
-      message.error(err.message);
-    }
-  };
-
+const Users = ({ users, getUsers }) => {
   useEffect(() => {
     getUsers();
   }, []);
