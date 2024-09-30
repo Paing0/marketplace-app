@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, registerUser } from "../apicalls/auth";
-import { setUserId } from "../store/slices/userSlice";
+import { setUser } from "../store/slices/userSlice";
 
 const AuthForm = ({ isLoginPage }) => {
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +18,7 @@ const AuthForm = ({ isLoginPage }) => {
         const response = await loginUser(values);
         if (response.isSuccess) {
           localStorage.setItem("token", response.token);
-          dispatch(setUserId(response.token));
+          dispatch(setUser(response.token));
           message.success(response.message);
           navigate("/");
         } else {

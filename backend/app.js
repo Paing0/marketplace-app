@@ -5,6 +5,7 @@ import "dotenv/config";
 
 // routes imports
 import authRoutes from "./routes/auth.js";
+import productRoutes from "./routes/product.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors({ origin: "*" }));
 
 // routes
 app.use(authRoutes);
+app.use(productRoutes);
 
 const startServer = async () => {
   try {

@@ -1,8 +1,11 @@
-import { Checkbox, Col, Form, Input, Row, Select } from "antd";
+import { Checkbox, Col, Form, Input, Row, Select, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
+import { sellProduct } from "../../apicalls/product";
 
-const AddProduct = () => {
+const AddProduct = ({ setActiveTabKey }) => {
+  const [form] = Form.useForm();
+
   const options = [
     {
       value: "clothing_and_fashion",
@@ -49,15 +52,25 @@ const AddProduct = () => {
     },
   ];
 
+  const onFinishHandler = async (values) => {
+    try {
+      const response = await sellProduct(values);
+      if (response.isSuccess) {
+        form.resetFields();
+        message.success(response.message);
+        setActiveTabKey("1");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
   return (
-    <section>
-      <h1 className="text-2xl font-bold my-2">What do you want to sell?</h1>{" "}
-      <Form
-        layout="vertical"
-        onFinish={(values) => {
-          console.log(values);
-        }}
-      >
+    <section className="my-5">
+      <h1 className="text-2xl font-bold my-2">What do you want to sell?</h1>
+      <Form layout="vertical" onFinish={onFinishHandler} form={form}>
         <Form.Item
           name="product_name"
           label="Product Name"
@@ -68,7 +81,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input placeholder="Enter product name..." />{" "}
+          <Input placeholder="Enter product name..." />
         </Form.Item>
         <Form.Item
           name="product_description"
@@ -80,7 +93,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <TextArea rows={4} placeholder="Enter product description..." />{" "}
+          <TextArea rows={4} placeholder="Enter product description..." />
         </Form.Item>
         <Row gutter={16}>
           <Col span={8}>
@@ -94,7 +107,7 @@ const AddProduct = () => {
                 },
               ]}
             >
-              <Input type="number" placeholder="Enter product price" />{" "}
+              <Input type="number" placeholder="Enter product price" />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -108,7 +121,7 @@ const AddProduct = () => {
                 },
               ]}
             >
-              <Select options={options} placeholder="Select a category" />{" "}
+              <Select options={options} placeholder="Select a category" />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -122,13 +135,12 @@ const AddProduct = () => {
                 },
               ]}
             >
-              <Input placeholder="e.g., 3 months ago" />{" "}
+              <Input placeholder="e.g., 3 months ago" />
             </Form.Item>
           </Col>
         </Row>
         <Form.Item name="product_details" label="This product includes">
-          {" "}
-          <Checkbox.Group options={checkBoxOptions} defaultValue={[]} />{" "}
+          <Checkbox.Group options={checkBoxOptions} />
         </Form.Item>
         <button
           type="submit"
