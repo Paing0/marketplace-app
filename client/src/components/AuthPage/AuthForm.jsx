@@ -127,7 +127,8 @@ const AuthForm = ({ isLoginPage }) => {
             </p>
           ) : (
             <p>
-              Don&apos;t have an account?{" "}
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              Don't have an account?{" "}
               <Link
                 className="font-medium text-blue-600 hover:text-blue-500"
                 to="/register"

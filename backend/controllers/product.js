@@ -280,6 +280,15 @@ export const deleteProductImages = async (req, res) => {
 export const savedProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const isExists = await SavedProduct.findOne({
+      $and: [{ user_id: req.userId }, { product_id: id }],
+    });
+
+    if (isExists) {
+      throw new Error("Product already saved");
+    }
+
     await SavedProduct.create({
       user_id: req.userId,
       product_id: id,
@@ -300,10 +309,10 @@ export const getSavedProducts = async (req, res) => {
   try {
     const products = await SavedProduct.find({
       user_id: req.userId,
-    }).populate("product_id", "name category images description");
-    if (!products || products.length === 0) {
-      throw new Error("No products are not saved yet.");
-    }
+    }).populate("product_id", "name category images description price");
+    //if (!products || products.length === 0) {
+    //  throw new Error("No products are not saved yet.");
+    //}
     return res.status(200).json({
       isSuccess: true,
       products,
@@ -319,7 +328,7 @@ export const getSavedProducts = async (req, res) => {
 export const unSavedProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    await SavedProduct.findOneAndRemove({ product_id: id });
+    await SavedProduct.findOneAndDelete({ product_id: id });
     return res.status(200).json({
       isSuccess: true,
       message: "Product removed from the list.",

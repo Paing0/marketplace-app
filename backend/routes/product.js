@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import authMiddleware from "../middelwares/auth.js";
+import * as bidController from "../controllers/bid.js";
+import * as notificationController from "../controllers/notification.js";
 
 import * as productController from "../controllers/product.js";
 
@@ -125,6 +127,34 @@ router.delete(
   "/unsaved-products/:id",
   authMiddleware,
   productController.unSavedProduct,
+);
+
+// save new bid
+// POST /add-bid
+router.post(
+  "/add-bid",
+  [
+    body("message").trim().notEmpty().withMessage("Message name is required"),
+    body("phone").trim().notEmpty().withMessage("Phone number is required"),
+  ],
+  authMiddleware,
+  bidController.savedNewBid,
+);
+
+// get all bids
+// GET /bids/:product_id
+router.get("/bids/:product_id", bidController.getAllBids);
+
+// push noti
+// POST /notify
+router.post("/notify", authMiddleware, notificationController.pushNofification);
+
+// get noti
+// GET /notifications
+router.get(
+  "/notifications",
+  authMiddleware,
+  notificationController.getNotifications,
 );
 
 export default router;

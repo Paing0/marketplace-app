@@ -10,6 +10,8 @@ import { getAllProducts } from "../../apicalls/product";
 import General from "./General";
 import ManageProduct from "./ManageProduct";
 import Products from "./Products";
+import { getAllNoti } from "../../apicalls/notification";
+import Notification from "./Notification";
 
 const Index = () => {
   const [activeTabKey, setActiveTabKey] = useState("1");
@@ -17,6 +19,7 @@ const Index = () => {
   const [editMode, setEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
   const [manageTabKey, setManageTabKey] = useState("1");
+  const [notifications, setNotifications] = useState([]);
 
   const getProducts = async () => {
     try {
@@ -31,12 +34,26 @@ const Index = () => {
     }
   };
 
+  const getNoti = async () => {
+    try {
+      const response = await getAllNoti();
+      if (response.isSuccess) {
+        setNotifications(response.notis);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     if (activeTabKey === "1") {
       setEditMode(false);
       setEditProductId(null);
     }
     getProducts();
+    getNoti();
   }, [activeTabKey]);
 
   const items = [
@@ -85,7 +102,7 @@ const Index = () => {
           Notifications
         </span>
       ),
-      children: "Content of Tab Pane 2",
+      children: <Notification notifications={notifications} />,
     },
     {
       key: "4",
