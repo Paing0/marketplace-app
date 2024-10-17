@@ -6,6 +6,11 @@ import "./index.css";
 import store from "./store/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+
+if (import.meta.env.VITE_MODE === "production") {
+  disableReactDevTools();
+}
 
 const persistor = persistStore(store);
 

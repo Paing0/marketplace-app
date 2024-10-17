@@ -204,6 +204,11 @@ export const uploadProductImage = async (req, res) => {
   const productId = req.body.product_id;
   let secureUrlArray = [];
 
+  const product = await Product.findOne({ _id: productId });
+  if (req.userId.toString() !== product.seller.toString()) {
+    throw new Error("Authorization Failed.");
+  }
+
   try {
     productImages.forEach((img) => {
       cloudinary.uploader.upload(img.path, async (err, result) => {
@@ -236,7 +241,12 @@ export const uploadProductImage = async (req, res) => {
 export const getSavedImages = async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await Product.findById(id).select("images");
+    const product = await Product.findById(id).select("images seller");
+
+    if (req.userId.toString() !== product.seller.toString()) {
+      throw new Error("Authorization Failed.");
+    }
+
     if (!product) {
       throw new Error("Product not found");
     }

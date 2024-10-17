@@ -13,7 +13,7 @@ const Notification = ({ notifications, getNoti }) => {
     () => {
       getNoti();
     },
-    [getNoti]
+    [getNoti()]
   );
 
   const markAsRead = async (id) => {
@@ -60,12 +60,14 @@ const Notification = ({ notifications, getNoti }) => {
     <section>
       <div className=" flex my-2 justify-between">
         <h1 className="text-3xl font-semibold ">Notifications</h1>
-        <p
-          className=" text-red-600 font-medium my-2 underline cursor-pointer"
-          onClick={deleteAllHandler}
-        >
-          Delete All Notifications
-        </p>
+        {notifications.length > 0 && (
+          <p
+            className=" text-red-600 font-medium my-2 underline cursor-pointer"
+            onClick={deleteAllHandler}
+          >
+            Delete All Forever
+          </p>
+        )}
       </div>
       <div className="max-w-4l">
         {notifications.length === 0 && (
