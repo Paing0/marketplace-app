@@ -14,6 +14,8 @@ import Dashboard from "./Dashboard";
 import General from "./General";
 import Products from "./Products";
 import Users from "./Users";
+import Notification from "./Notification";
+import { getAllNoti } from "../../apicalls/notification";
 
 const Index = () => {
   const { user } = useSelector((state) => state.reducer.user);
@@ -21,16 +23,25 @@ const Index = () => {
   const [activeTabKey, setActiveTabKey] = useState("1");
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [pendingProducts, setPendingProducts] = useState(0);
 
   const onChangeHandler = (key) => {
     setActiveTabKey(key);
   };
 
-  const getProducts = async () => {
+  const getProducts = async (page = 1, perPage = 10) => {
     try {
-      const response = await getAllProducts();
+      const response = await getAllProducts(page, perPage);
       if (response.isSuccess) {
         setProducts(response.products);
+        setCurrentPage(response.currentPage);
+        setTotalPages(response.totalPages);
+        setTotalProducts(response.totalProducts);
+        setPendingProducts(response.pendingProducts);
       } else {
         throw new Error(response.message);
       }
@@ -52,6 +63,19 @@ const Index = () => {
     }
   };
 
+  const getNoti = async () => {
+    try {
+      const response = await getAllNoti();
+      if (response.isSuccess) {
+        setNotifications(response.notis);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   const isAdmin = () => {
     if (user.role !== "admin") {
       navigate("/");
@@ -60,8 +84,9 @@ const Index = () => {
 
   useEffect(() => {
     isAdmin();
-    getProducts();
+    getProducts(1, 10);
     getUsers();
+    getNoti()
   }, [activeTabKey]);
 
   const items = [
@@ -73,7 +98,15 @@ const Index = () => {
           Dashboard
         </span>
       ),
-      children: <Dashboard products={products} users={users} />,
+      children: (
+        <Dashboard
+          products={products}
+          users={users}
+          totalProducts={totalProducts}
+          pendingProducts={pendingProducts}
+          setActiveTabKey={setActiveTabKey}
+        />
+      ),
     },
     {
       key: "2",
@@ -83,7 +116,14 @@ const Index = () => {
           Manage Products
         </span>
       ),
-      children: <Products products={products} getProducts={getProducts} />,
+      children: (
+        <Products
+          products={products}
+          getProducts={getProducts}
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
+      ),
     },
     {
       key: "3",
@@ -103,7 +143,7 @@ const Index = () => {
           Notifications
         </span>
       ),
-      children: "Content of Tab Pane 4",
+      children: <Notification notifications={notifications} />,
     },
     {
       key: "5",

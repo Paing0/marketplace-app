@@ -94,8 +94,8 @@ const Details = () => {
   return (
     <section
       className={`flex mt-20 ${isProcessing
-          ? "items-center justify-center"
-          : "items-start justify-between"
+        ? "items-center justify-center"
+        : "items-start justify-between"
         }`}
     >
       {isProcessing ? (
@@ -268,7 +268,7 @@ const Details = () => {
                     to bid this product.
                   </p>
                 )}
-                {user._id === product.seller._id && (
+                {user?._id === product.seller._id && (
                   <p className=" font-medium text-red-600 mb-2">
                     You are the product seller / owner. You cannot placed bid.
                   </p>

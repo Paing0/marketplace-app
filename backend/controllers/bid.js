@@ -30,9 +30,9 @@ export const getAllBids = async (req, res) => {
       .populate("buyer_id", "name")
       .select("text phone_number createdAt")
       .sort({ createdAt: -1 });
-    //if (!bids || bids.length === 0) {
-    //  throw new Error("No bids are not placed yet.");
-    //}
+    if (!bids || bids.length === 0) {
+      throw new Error("No bids are not placed yet.");
+    }
     return res.status(200).json({
       isSuccess: true,
       bids,

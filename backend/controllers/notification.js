@@ -41,3 +41,60 @@ export const getNotifications = async (req, res) => {
     });
   }
 };
+
+export const markAsRead = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const noti = await Notification.findById(id);
+
+    if (!noti) {
+      throw new Error("notifications not found.");
+    }
+
+    noti.isRead = true;
+    noti.save();
+
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Done.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteNoti = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Notification.findByIdAndRemove(id);
+
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Notification is deleted.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteAllNoti = async (req, res) => {
+  try {
+    await Notification.deleteMany({ owner_id: req.userId });
+
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Notification are cleared.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      isSuccess: false,
+      message: error.message,
+    });
+  }
+};

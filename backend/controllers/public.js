@@ -1,13 +1,27 @@
 import Product from "../models/Product.js";
 
-export const getProducts = async (_req, res) => {
+export const getProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 6;
+
   try {
-    const products = await Product.find({ status: "approve" }).sort({
-      createdAt: -1,
-    });
+    const products = await Product.find({ status: "approve" })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    const totalProducts = await Product.find({
+      status: "approve",
+    }).countDocuments();
+
+    const totalPages = Math.ceil(totalProducts / perPage);
+
     return res.status(200).json({
       isSuccess: true,
       products,
+      totalPages,
+      currentPage: page,
+      totalProducts,
     });
   } catch (err) {
     return res.status(500).json({

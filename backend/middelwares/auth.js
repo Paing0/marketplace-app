@@ -2,7 +2,12 @@ import jwt from "jsonwebtoken";
 
 export default async (req, res, next) => {
   try {
-    const token = req.header("Authorization").split(" ")[1];
+    const authHeader = req.header("Authorization");
+    if (!authHeader) {
+      return;
+    }
+
+    const token = authHeader.split(" ")[1];
     if (!token) {
       throw new Error("Unauthorized");
     }
