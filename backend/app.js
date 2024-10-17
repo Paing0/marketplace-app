@@ -31,7 +31,7 @@ const filterConfigure = (_req, file, cb) => {
 const app = express();
 
 // Global middlewares
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "https://tradehub-yajl.onrender.com/" }));
 app.use(express.json());
 
 app.use(
